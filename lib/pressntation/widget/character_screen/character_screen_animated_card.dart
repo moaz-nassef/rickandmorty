@@ -1,19 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_card.dart';
+import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_grid_card.dart';
+import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_layout_mode.dart';
 
 class CharacterScreenAnimatedCard extends StatelessWidget {
   final int index;
   final Character character;
+  final CharacterScreenLayoutMode layoutMode;
 
   const CharacterScreenAnimatedCard({
     super.key,
     required this.index,
     required this.character,
+    this.layoutMode = CharacterScreenLayoutMode.list,
   });
 
   @override
   Widget build(BuildContext context) {
+    final card = layoutMode == CharacterScreenLayoutMode.grid
+        ? CharacterScreenGridCard(character: character)
+        : CharacterScreenCard(character: character);
+
     return TweenAnimationBuilder<double>(
       tween: Tween(begin: 0, end: 1),
       duration: Duration(milliseconds: 420 + (index % 8) * 70),
@@ -27,7 +35,7 @@ class CharacterScreenAnimatedCard extends StatelessWidget {
           ),
         );
       },
-      child: CharacterScreenCard(character: character),
+      child: card,
     );
   }
 }

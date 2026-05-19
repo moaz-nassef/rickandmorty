@@ -1,0 +1,4 @@
+enum CharacterScreenLayoutMode {
+  list,
+  grid,
+}
