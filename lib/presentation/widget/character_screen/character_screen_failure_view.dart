@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rickandmorty/bussiness_logic/cubit/cubit/character_cubit.dart';
+import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/consstant/string.dart';
 
 class CharacterScreenFailureView extends StatelessWidget {

@@ -21,7 +21,7 @@ class CharacterScreenCard extends StatelessWidget {
             Navigator.pushNamed(
               context,
               CharacterDetailScreen,
-              arguments: character,
+              arguments: character.charid,
             );
           },
           child: Ink(

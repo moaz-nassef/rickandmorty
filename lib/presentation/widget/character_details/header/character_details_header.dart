@@ -139,7 +139,7 @@ class CharacterDetailsHeader extends StatelessWidget {
         borderRadius: borderRadius,
         child: Image.network(
           character.image,
-          fit: BoxFit.cover,
+          fit: BoxFit.fill,
           errorBuilder: (_, __, ___) {
             return Container(
               color: const Color(0xff243037),

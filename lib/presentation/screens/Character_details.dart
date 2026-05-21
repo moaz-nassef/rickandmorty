@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:rickandmorty/consstant/string.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
+import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/presentation/widget/character_details/character_details_content.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CharacterDetailsScreen extends StatefulWidget {
-  final Character character;
+  final int charId;
 
-  const CharacterDetailsScreen({super.key, required this.character});
+  const CharacterDetailsScreen({super.key, required this.charId});
 
   @override
   State<CharacterDetailsScreen> createState() => _CharacterDetailsScreenState();
@@ -63,12 +64,22 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen>
     super.dispose();
   }
 
+  Character? _findCharacter(BuildContext context) {
+    return context.read<CharacterCubit>().findCharacterById(widget.charId);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final statusColor = characterScreenCardStatusColor(widget.character.status);
+    final character = _findCharacter(context);
+
+    if (character == null) {
+      return _buildError('Character not found');
+    }
+
+    final statusColor = characterScreenCardStatusColor(character.status);
 
     return Scaffold(
-      backgroundColor: Mycoloer.mygray,
+      backgroundColor: const Color(0xff343A40),
       body: SafeArea(
         child: Skeletonizer(
           enabled: _isLoading,
@@ -77,11 +88,43 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen>
             highlightColor: const Color(0xff2c3842),
           ),
           child: CharacterDetailsContent(
-            character: widget.character,
+            character: character,
             imageScale: _imageScale,
             contentFade: _contentFade,
             staggerController: _staggerController,
             statusColor: statusColor,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildError(String message) {
+    return Scaffold(
+      backgroundColor: const Color(0xff343A40),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline_rounded,
+                  color: Color(0xffffc107), size: 56),
+              const SizedBox(height: 16),
+              Text(message,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: Color(0xffE5E8EB))),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                style: FilledButton.styleFrom(
+                  backgroundColor: Color(0xffffc107),
+                  foregroundColor: Color(0xff132318),
+                ),
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(Icons.arrow_back_rounded),
+                label: const Text('Go back'),
+              ),
+            ],
           ),
         ),
       ),
