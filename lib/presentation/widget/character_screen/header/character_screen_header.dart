@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/header/character_screen_header_branding_row.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/header/character_screen_header_search_field.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header_branding_row.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header_search_field.dart';
 
 class CharacterScreenHeader extends StatelessWidget {
   final TextEditingController searchController;

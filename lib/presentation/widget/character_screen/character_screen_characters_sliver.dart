@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rickandmorty/bussiness_logic/cubit/cubit/character_cubit.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_animated_card.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_empty_view.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_failure_view.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_layout_mode.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/loading_view/character_screen_loading_view.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_animated_card.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_empty_view.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_failure_view.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_layout_mode.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/loading_view/character_screen_loading_view.dart';
 
 class CharacterScreenCharactersSliver extends StatelessWidget {
   final CharacterScreenLayoutMode layoutMode;
@@ -42,7 +42,7 @@ class CharacterScreenCharactersSliver extends StatelessWidget {
           if (layoutMode == CharacterScreenLayoutMode.grid) {
             final screenWidth = MediaQuery.of(context).size.width;
 
-            const double minItemWidth = 180;
+            const double minItemWidth = 200;
 
             int crossAxisCount = (screenWidth / minItemWidth).floor();
 
@@ -67,7 +67,7 @@ class CharacterScreenCharactersSliver extends StatelessWidget {
                     character: state.characters[index],
                     layoutMode: layoutMode,
                   );
-                }, childCount: state.characters.length),  
+                }, childCount: state.characters.length),
               ),
             );
           }

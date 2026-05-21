@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/consstant/string.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_characters_sliver.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_layout_mode.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_view_toggle_button.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/header/character_screen_header.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_characters_sliver.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_layout_mode.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_view_toggle_button.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header.dart';
 
 class CharacterScreen extends StatefulWidget {
   const CharacterScreen({super.key});

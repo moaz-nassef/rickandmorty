@@ -15,7 +15,6 @@ class RickAndMortyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      //ثوابيت يعني consstant
       onGenerateRoute: appRoutes.generateRoutes,
     );
   }

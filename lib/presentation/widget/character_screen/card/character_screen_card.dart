@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_card_character_image.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_card_content.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_card_portal_clipper.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_character_image.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_content.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_portal_clipper.dart';
 
 class CharacterScreenCard extends StatelessWidget {
   final Character character;

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/loading_view/character_screen_loading_progress_ring.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/loading_view/character_screen_loading_rotating_logo.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/loading_view/character_screen_loading_progress_ring.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/loading_view/character_screen_loading_rotating_logo.dart';
 
 class CharacterScreenLoadingSpinner extends StatefulWidget {
   const CharacterScreenLoadingSpinner({super.key});

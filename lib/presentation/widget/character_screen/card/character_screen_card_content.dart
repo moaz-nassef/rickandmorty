@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/card/character_screen_card_status_color.dart';
-import 'package:rickandmorty/pressntation/widget/character_screen/character_screen_info_pill.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/character_screen_info_pill.dart';
 
 class CharacterScreenCardContent extends StatelessWidget {
   final Character character;
