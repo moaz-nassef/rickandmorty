@@ -112,6 +112,36 @@ class CharacterScreenGridCard extends StatelessWidget {
                             child: Image.network(
                               character.image,
                               fit: BoxFit.cover,
+
+                              loadingBuilder:
+                                  (context, child, loadingProgress) {
+                                    if (loadingProgress == null) return child;
+
+                                    return Center(
+                                      child: CircularProgressIndicator(
+                                        value:
+                                            loadingProgress
+                                                    .expectedTotalBytes !=
+                                                null
+                                            ? loadingProgress
+                                                      .cumulativeBytesLoaded /
+                                                  loadingProgress
+                                                      .expectedTotalBytes!
+                                            : null,
+                                      ),
+                                    );
+                                  },
+
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: const Color(0xff243037),
+                                  child: const Icon(
+                                    Icons.person_rounded,
+                                    color: Mycoloer.mywhite,
+                                    size: 48,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ),

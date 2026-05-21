@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header_branding_row.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header_search_field.dart';
+import 'package:rickandmorty/presentation/widget/character_screen/pagination/character_screen_pagination_bar.dart';
 
 class CharacterScreenHeader extends StatelessWidget {
   final TextEditingController searchController;
@@ -17,6 +18,8 @@ class CharacterScreenHeader extends StatelessWidget {
           const CharacterScreenHeaderBrandingRow(),
           const SizedBox(height: 22),
           CharacterScreenHeaderSearchField(searchController: searchController),
+          const SizedBox(height: 12),
+          const CharacterScreenPaginationBar(),
         ],
       ),
     );

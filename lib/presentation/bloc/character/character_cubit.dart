@@ -10,28 +10,65 @@ part 'character_state.dart';
 class CharacterCubit extends Cubit<CharacterState> {
   final CharacterRepository characterRepository;
   List<Character> allCharacters = [];
+  int currentPage = 1;
+  int totalPages = 1;
   Timer? _debounceTimer;
 
   CharacterCubit(this.characterRepository) : super(CharacterInitial());
 
-  Future<void> getAllCharacters({bool refresh = false}) async {
+  Future<void> getAllCharacters({bool refresh = false, int page = 1}) async {
     if (refresh) {
       allCharacters = [];
     }
 
-    if (allCharacters.isEmpty) {
-      emit(CharacterLoading());
-    }
+    emit(CharacterLoading());
 
     try {
-      allCharacters = await characterRepository.getAllCharacters();
-      emit(CharactersLoaded(allCharacters));
+      final response = await characterRepository.getCharactersPage(page);
+      currentPage = response.currentPage;
+      totalPages = response.totalPages;
+      allCharacters = response.characters;
+
+      emit(CharactersLoaded(
+        allCharacters,
+        currentPage: currentPage,
+        totalPages: totalPages,
+      ));
     } catch (e) {
       if (allCharacters.isNotEmpty) {
-        emit(CharactersLoaded(allCharacters));
+        emit(CharactersLoaded(
+          allCharacters,
+          currentPage: currentPage,
+          totalPages: totalPages,
+        ));
       } else {
         emit(CharacterFailure(e.toString()));
       }
+    }
+  }
+
+  Future<void> goToPage(int page) async {
+    if (page < 1 || page > totalPages) return;
+
+    emit(CharacterLoading());
+
+    try {
+      final response = await characterRepository.getCharactersPage(page);
+      currentPage = response.currentPage;
+      totalPages = response.totalPages;
+      allCharacters = response.characters;
+
+      emit(CharactersLoaded(
+        allCharacters,
+        currentPage: currentPage,
+        totalPages: totalPages,
+      ));
+    } catch (e) {
+      emit(CharactersLoaded(
+        allCharacters,
+        currentPage: currentPage,
+        totalPages: totalPages,
+      ));
     }
   }
 
@@ -41,7 +78,11 @@ class CharacterCubit extends Cubit<CharacterState> {
       final query = searchedCharacter.trim().toLowerCase();
 
       if (query.isEmpty) {
-        emit(CharactersLoaded(allCharacters));
+        emit(CharactersLoaded(
+          allCharacters,
+          currentPage: currentPage,
+          totalPages: totalPages,
+        ));
         return;
       }
 
@@ -49,7 +90,11 @@ class CharacterCubit extends Cubit<CharacterState> {
         return character.name.toLowerCase().contains(query);
       }).toList();
 
-      emit(CharactersLoaded(filteredCharacters));
+      emit(CharactersLoaded(
+        filteredCharacters,
+        currentPage: currentPage,
+        totalPages: totalPages,
+      ));
     });
   }
 

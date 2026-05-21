@@ -6,8 +6,8 @@ class CharacterRepository {
 
   CharacterRepository(this.characterWebService);
 
-  Future<List<Character>> getAllCharacters() async {
-    return await characterWebService.getAllCharacters();
+  Future<CharacterPageResponse> getCharactersPage(int page) async {
+    return await characterWebService.getCharactersPage(page);
   }
 
   Future<Character> getCharacterById(int id) async {
