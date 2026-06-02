@@ -1,7 +1,9 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
+import 'package:rickandmorty/presentation/widget/shared/shimmer_placeholder.dart';
 
 class CharacterDetailsHeader extends StatelessWidget {
   final Character character;
@@ -87,9 +89,9 @@ class CharacterDetailsHeader extends StatelessWidget {
           width: 48,
           height: 48,
           decoration: BoxDecoration(
-            color: const Color(0xff243037).withOpacity(0.7),
+            color: const Color(0xff243037).withValues(alpha: 0.7),
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white.withOpacity(0.1)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
           ),
           child: const Icon(
             Icons.arrow_back_rounded,
@@ -110,7 +112,7 @@ class CharacterDetailsHeader extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         border: Border.all(
-          color: statusColor.withOpacity(0.15),
+          color: statusColor.withValues(alpha: 0.15),
           width: borderWidth,
         ),
       ),
@@ -128,28 +130,29 @@ class CharacterDetailsHeader extends StatelessWidget {
         borderRadius: borderRadius,
         boxShadow: [
           BoxShadow(
-            color: const Color(0xff9dff35).withOpacity(0.3),
+            color: const Color(0xff9dff35).withValues(alpha: 0.3),
             blurRadius: 40,
             spreadRadius: 4,
           ),
         ],
-        border: Border.all(color: Colors.white.withOpacity(0.2), width: 3),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 3),
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
-        child: Image.network(
-          character.image,
+        child: CachedNetworkImage(
+          imageUrl: character.image,
           fit: BoxFit.fill,
-          errorBuilder: (_, __, ___) {
-            return Container(
-              color: const Color(0xff243037),
-              child: Icon(
-                Icons.person_rounded,
-                color: Mycoloer.mywhite,
-                size: math.max(48.0, size * 0.4),
-              ),
-            );
-          },
+          placeholder: (_, _) => const ShimmerPlaceholder(
+            borderRadius: BorderRadius.all(Radius.circular(24)),
+          ),
+          errorWidget: (_, _, _) => Container(
+            color: const Color(0xff243037),
+            child: Icon(
+              Icons.person_rounded,
+              color: Mycoloer.mywhite,
+              size: math.max(48.0, size * 0.4),
+            ),
+          ),
         ),
       ),
     );
@@ -161,10 +164,10 @@ class CharacterDetailsHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff1e282f),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: statusColor.withOpacity(0.9), width: 1.5),
+        border: Border.all(color: statusColor.withValues(alpha: 0.9), width: 1.5),
         boxShadow: [
           BoxShadow(
-            color: statusColor.withOpacity(0.5),
+            color: statusColor.withValues(alpha: 0.5),
             blurRadius: 16,
             spreadRadius: 1,
           ),
@@ -198,7 +201,7 @@ class CharacterDetailsHeader extends StatelessWidget {
         color: statusColor,
         boxShadow: [
           BoxShadow(
-            color: statusColor.withOpacity(0.7),
+            color: statusColor.withValues(alpha: 0.7),
             blurRadius: 8,
             spreadRadius: 1,
           ),

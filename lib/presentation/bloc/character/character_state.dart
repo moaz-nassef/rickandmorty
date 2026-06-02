@@ -15,11 +15,27 @@ final class CharacterLoading extends CharacterState {
 
 final class CharactersLoaded extends CharacterState {
   final List<Character> characters;
+  final int currentPage;
+  final int totalPages;
+  final bool isLoadingPage;
+  final String? errorMessage;
 
-  CharactersLoaded(this.characters);
+  CharactersLoaded(
+    this.characters, {
+    this.currentPage = 1,
+    this.totalPages = 1,
+    this.isLoadingPage = false,
+    this.errorMessage,
+  });
 
   @override
-  List<Object?> get props => [characters];
+  List<Object?> get props => [
+        characters,
+        currentPage,
+        totalPages,
+        isLoadingPage,
+        errorMessage,
+      ];
 }
 
 final class CharacterDetailsLoaded extends CharacterState {

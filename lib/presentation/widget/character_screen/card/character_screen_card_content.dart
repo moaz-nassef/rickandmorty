@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
@@ -26,9 +27,10 @@ class CharacterScreenCardContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Text(
+          AutoSizeText(
             character.name,
             maxLines: 2,
+            minFontSize: 12,
             overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: Color(0xff132318),
@@ -37,24 +39,29 @@ class CharacterScreenCardContent extends StatelessWidget {
               height: 1.02,
             ),
           ),
-          const Spacer(),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              CharacterScreenInfoPill(
-                label: character.status,
-                color: statusColor,
-              ),
-              CharacterScreenInfoPill(
-                label: character.species,
-                color: const Color(0xff243037),
-              ),
-              CharacterScreenInfoPill(
-                label: character.gender,
-                color: const Color(0xff243037),
-              ),
-            ],
+          const SizedBox(height: 8),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            clipBehavior: Clip.hardEdge,
+            child: Wrap(
+              spacing: 8,
+              runSpacing: 4,
+              children: [
+                CharacterScreenInfoPill(
+                  label: character.status,
+                  color: statusColor,
+                ),
+                CharacterScreenInfoPill(
+                  label: character.species,
+                  color: const Color(0xff243037),
+                ),
+                CharacterScreenInfoPill(
+                  label: character.gender,
+                  color: const Color(0xff243037),
+                ),
+              ],
+            ),
           ),
         ],
       ),

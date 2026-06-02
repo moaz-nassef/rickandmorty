@@ -21,7 +21,7 @@ class AppRoutes {
       case AllcharacterScreen:
         return MaterialPageRoute(
           builder: (_) => BlocProvider.value(
-            value: characterCubit..getAllCharacters(),
+            value: characterCubit..loadPage(1),
             child: const CharacterScreen(),
           ),
         );

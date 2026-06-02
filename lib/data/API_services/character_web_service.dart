@@ -15,6 +15,7 @@ class CharacterWebService {
 
     dio = Dio(options);
   }
+
   Future<Character> getCharacterById(int id) async {
     try {
       final response = await dio.get('/character/$id');
@@ -24,18 +25,24 @@ class CharacterWebService {
     }
   }
 
-  Future<List<Character>> getAllCharacters() async {
+  Future<({List<Character> characters, int totalPages})> getCharactersPage(
+    int page,
+  ) async {
     try {
-      final response = await dio.get('/character');
+      final response = await dio.get(
+        '/character',
+        queryParameters: {'page': page},
+      );
       final data = response.data as Map<String, dynamic>;
+      final info = data['info'] as Map<String, dynamic>;
       final results = data['results'] as List<dynamic>;
 
-      return results
-          .map(
-            (character) =>
-                Character.fromJson(character as Map<String, dynamic>),
-          )
+      final characters = results
+          .map((c) => Character.fromJson(c as Map<String, dynamic>))
           .toList();
+      final totalPages = info['pages'] as int;
+
+      return (characters: characters, totalPages: totalPages);
     } catch (e) {
       rethrow;
     }

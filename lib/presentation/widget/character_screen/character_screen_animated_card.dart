@@ -4,7 +4,7 @@ import 'package:rickandmorty/presentation/widget/character_screen/card/character
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_grid_card.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/character_screen_layout_mode.dart';
 
-class CharacterScreenAnimatedCard extends StatelessWidget {
+class CharacterScreenAnimatedCard extends StatefulWidget {
   final int index;
   final Character character;
   final CharacterScreenLayoutMode layoutMode;
@@ -17,25 +17,41 @@ class CharacterScreenAnimatedCard extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final card = layoutMode == CharacterScreenLayoutMode.grid
-        ? CharacterScreenGridCard(character: character)
-        : CharacterScreenCard(character: character);
+  State<CharacterScreenAnimatedCard> createState() =>
+      _CharacterScreenAnimatedCardState();
+}
 
-    return TweenAnimationBuilder<double>(
-      tween: Tween(begin: 0, end: 1),
-      duration: Duration(milliseconds: 420 + (index % 8) * 70),
-      curve: Curves.easeOutCubic,
-      builder: (context, value, child) {
-        return Opacity(
-          opacity: value,
-          child: Transform.translate(
-            offset: Offset(0, 32 * (1 - value)),
-            child: child,
-          ),
-        );
-      },
-      child: card,
+class _CharacterScreenAnimatedCardState
+    extends State<CharacterScreenAnimatedCard>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    final card = widget.layoutMode == CharacterScreenLayoutMode.grid
+        ? CharacterScreenGridCard(character: widget.character)
+        : CharacterScreenCard(character: widget.character);
+
+    return RepaintBoundary(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(begin: 0, end: 1),
+        duration:
+            Duration(milliseconds: 420 + (widget.index % 8) * 70),
+        curve: Curves.easeOutCubic,
+        builder: (context, value, child) {
+          return Opacity(
+            opacity: value,
+            child: Transform.translate(
+              offset: Offset(0, 32 * (1 - value)),
+              child: child,
+            ),
+          );
+        },
+        child: card,
+      ),
     );
   }
 }

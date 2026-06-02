@@ -71,7 +71,12 @@ class CharacterScreenCard extends StatelessWidget {
                 ),
                 Positioned.fill(
                   right: 132,
-                  child: CharacterScreenCardContent(character: character),
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    alignment: Alignment.centerLeft,
+                    clipBehavior: Clip.hardEdge,
+                    child: CharacterScreenCardContent(character: character),
+                  ),
                 ),
               ],
             ),

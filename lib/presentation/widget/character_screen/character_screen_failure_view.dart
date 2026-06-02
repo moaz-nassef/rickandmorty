@@ -51,7 +51,7 @@ class CharacterScreenFailureView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            onPressed: context.read<CharacterCubit>().getAllCharacters,
+            onPressed: () => context.read<CharacterCubit>().loadPage(1),
             icon: const Icon(Icons.refresh_rounded),
             label: const Text('Try again'),
           ),

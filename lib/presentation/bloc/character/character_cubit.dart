@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/data/repository/character_repository.dart';
@@ -9,29 +9,120 @@ part 'character_state.dart';
 
 class CharacterCubit extends Cubit<CharacterState> {
   final CharacterRepository characterRepository;
-  List<Character> allCharacters = [];
   Timer? _debounceTimer;
+  bool _isLoadingPage = false;
+  bool _isInitialLoad = true;
 
   CharacterCubit(this.characterRepository) : super(CharacterInitial());
 
-  Future<void> getAllCharacters({bool refresh = false}) async {
-    if (refresh) {
-      allCharacters = [];
+  Set<int> get cachedPages => characterRepository.cachedPages;
+  List<Character>? pageCharacters(int page) =>
+      characterRepository.pageCharacters(page);
+
+  Future<void> loadPage(int page) async {
+    if (_isLoadingPage) return;
+    if (page < 1) return;
+    if (_isInitialLoad && page == _currentPage && state is CharactersLoaded) {
+      return;
     }
 
-    if (allCharacters.isEmpty) {
+    _isLoadingPage = true;
+
+    if (characterRepository.isPageCached(page)) {
+      final cached = await characterRepository.getCharactersPage(page);
+      _isLoadingPage = false;
+      _isInitialLoad = false;
+      emit(CharactersLoaded(
+        cached.characters,
+        currentPage: page,
+        totalPages: cached.totalPages,
+      ));
+      _prefetchNext(page);
+      return;
+    }
+
+    final hasCache = characterRepository.cachedPages.isNotEmpty;
+    final previousState = state;
+    final previousPage = _currentPage;
+
+    if (!hasCache) {
       emit(CharacterLoading());
+    } else if (previousState is CharactersLoaded) {
+      emit(CharactersLoaded(
+        previousState.characters,
+        currentPage: previousState.currentPage,
+        totalPages: previousState.totalPages,
+        isLoadingPage: true,
+      ));
     }
 
     try {
-      allCharacters = await characterRepository.getAllCharacters();
-      emit(CharactersLoaded(allCharacters));
+      final result = await characterRepository.getCharactersPage(page);
+      _isLoadingPage = false;
+      _isInitialLoad = false;
+      emit(CharactersLoaded(
+        result.characters,
+        currentPage: page,
+        totalPages: result.totalPages,
+      ));
+      _prefetchNext(page);
     } catch (e) {
-      if (allCharacters.isNotEmpty) {
-        emit(CharactersLoaded(allCharacters));
-      } else {
+      _isLoadingPage = false;
+      _isInitialLoad = false;
+
+      if (!hasCache) {
         emit(CharacterFailure(e.toString()));
+      } else if (previousState is CharactersLoaded) {
+        emit(CharactersLoaded(
+          previousState.characters,
+          currentPage: previousPage,
+          totalPages: characterRepository.totalPages,
+          errorMessage: e.toString(),
+        ));
+      } else {
+        final pages = characterRepository.cachedPages.toList()..sort();
+        if (pages.isNotEmpty) {
+          final fallback =
+              await characterRepository.getCharactersPage(pages.first);
+          emit(CharactersLoaded(
+            fallback.characters,
+            currentPage: pages.first,
+            totalPages: fallback.totalPages,
+            errorMessage: e.toString(),
+          ));
+        } else {
+          emit(CharacterFailure(e.toString()));
+        }
       }
+    }
+  }
+
+  int get _totalPages => characterRepository.totalPages;
+
+  int get _currentPage {
+    if (state is CharactersLoaded) {
+      return (state as CharactersLoaded).currentPage;
+    }
+    return 1;
+  }
+
+  void nextPage() {
+    final next = _currentPage + 1;
+    if (next <= _totalPages) loadPage(next);
+  }
+
+  void previousPage() {
+    final prev = _currentPage - 1;
+    if (prev >= 1) loadPage(prev);
+  }
+
+  Future<void> _prefetchNext(int page) async {
+    final next = page + 1;
+    if (next > characterRepository.totalPages) return;
+    if (!characterRepository.isPageCached(next)) {
+      try {
+        await characterRepository.getCharactersPage(next);
+      } catch (_) {}
     }
   }
 
@@ -41,24 +132,38 @@ class CharacterCubit extends Cubit<CharacterState> {
       final query = searchedCharacter.trim().toLowerCase();
 
       if (query.isEmpty) {
-        emit(CharactersLoaded(allCharacters));
+        final cached = characterRepository.pageCharacters(_currentPage);
+        if (cached != null) {
+          emit(CharactersLoaded(
+            List.from(cached),
+            currentPage: _currentPage,
+            totalPages: characterRepository.totalPages,
+          ));
+        }
         return;
       }
 
-      final filteredCharacters = allCharacters.where((character) {
-        return character.name.toLowerCase().contains(query);
-      }).toList();
+      final allChars = characterRepository.cachedPages
+          .expand<Character>(
+              (p) => characterRepository.pageCharacters(p) ?? <Character>[])
+          .toList();
+      final filtered = allChars
+          .where((c) => c.name.toLowerCase().contains(query))
+          .toList();
 
-      emit(CharactersLoaded(filteredCharacters));
+      emit(CharactersLoaded(filtered, currentPage: 1, totalPages: 1));
     });
   }
 
   Character? findCharacterById(int id) {
-    try {
-      return allCharacters.firstWhere((c) => c.charid == id);
-    } catch (_) {
-      return null;
+    for (final page in characterRepository.cachedPages) {
+      final chars = characterRepository.pageCharacters(page);
+      if (chars == null) continue;
+      try {
+        return chars.firstWhere((c) => c.charid == id);
+      } catch (_) {}
     }
+    return null;
   }
 
   void loadCharacterById(int id) {
@@ -73,6 +178,7 @@ class CharacterCubit extends Cubit<CharacterState> {
   @override
   Future<void> close() {
     _debounceTimer?.cancel();
+    characterRepository.dispose();
     return super.close();
   }
 

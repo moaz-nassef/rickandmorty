@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/character_screen_info_pill.dart';
+import 'package:rickandmorty/presentation/widget/shared/shimmer_placeholder.dart';
 
 class CharacterScreenGridCard extends StatelessWidget {
   final Character character;
@@ -12,12 +14,6 @@ class CharacterScreenGridCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor = characterScreenCardStatusColor(character.status);
-
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    final cardWidth = screenWidth * 0.8;
-
-    final imageSize = cardWidth * 0.6;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
@@ -32,7 +28,6 @@ class CharacterScreenGridCard extends StatelessWidget {
               context,
               CharacterDetailScreen,
               arguments: character.charid,
-              // arguments: character,
             );
           },
           child: Ink(
@@ -47,7 +42,6 @@ class CharacterScreenGridCard extends StatelessWidget {
                   Color(0xff69c249),
                 ],
               ),
-
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.12),
@@ -55,20 +49,16 @@ class CharacterScreenGridCard extends StatelessWidget {
                   offset: const Offset(0, 10),
                 ),
               ],
-
               border: Border.all(
                 color: Colors.white.withValues(alpha: 0.35),
                 width: 1.3,
               ),
             ),
-
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
-
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // ID
                   Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
@@ -91,9 +81,7 @@ class CharacterScreenGridCard extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   const SizedBox(height: 1),
-
                   Expanded(
                     child: Hero(
                       tag: 'character-image-${character.charid}',
@@ -101,17 +89,28 @@ class CharacterScreenGridCard extends StatelessWidget {
                         aspectRatio: 1,
                         child: Container(
                           width: double.infinity,
-
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(24),
                             color: const Color(0xff243037),
                           ),
-
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(24),
-                            child: Image.network(
-                              character.image,
+                            child: CachedNetworkImage(
+                              imageUrl: character.image,
                               fit: BoxFit.cover,
+                              placeholder: (_, _) => const ShimmerPlaceholder(
+                                borderRadius: BorderRadius.all(Radius.circular(24)),
+                              ),
+                              errorWidget: (_, _, _) => const ColoredBox(
+                                color: Color(0xff243037),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.person_rounded,
+                                    color: Mycoloer.mywhite,
+                                    size: 44,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -119,7 +118,6 @@ class CharacterScreenGridCard extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 6),
-
                   Text(
                     character.name,
                     maxLines: 2,
@@ -132,13 +130,9 @@ class CharacterScreenGridCard extends StatelessWidget {
                       height: 1.2,
                     ),
                   ),
-
                   const SizedBox(height: 5),
-
-                  // Pills
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
-
                     child: Wrap(
                       spacing: 1,
                       runSpacing: 1,
