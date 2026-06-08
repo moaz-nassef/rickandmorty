@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_character_image.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_content.dart';
@@ -17,13 +16,6 @@ class CharacterScreenCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              CharacterDetailScreen,
-              arguments: character.charid,
-            );
-          },
           child: Ink(
             height: 150,
             decoration: BoxDecoration(

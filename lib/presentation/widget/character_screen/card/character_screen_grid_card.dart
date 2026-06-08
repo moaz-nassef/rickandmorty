@@ -23,13 +23,6 @@ class CharacterScreenGridCard extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(28),
           splashColor: Colors.white.withValues(alpha: 0.15),
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              CharacterDetailScreen,
-              arguments: character.charid,
-            );
-          },
           child: Ink(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(28),
