@@ -1,16 +1,145 @@
-# rickandmorty
+<div align="center">
 
-A new Flutter project.
+# 🧪 Rick and Morty Explorer
 
-## Getting Started
+**Browse the multiverse — search, filter & explore every Rick and Morty character.**
 
-This project is a starting point for a Flutter application.
+[![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?style=for-the-badge&logo=flutter&logoColor=white&color=02569B)](https://flutter.dev)
+[![Dart](https://img.shields.io/badge/Dart-3.x-0175C2?style=for-the-badge&logo=dart&logoColor=white&color=02569B)](https://dart.dev)
+[![API](https://img.shields.io/badge/API-Rick%20%26%20Morty%20API-00B4D8?style=for-the-badge)]
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-A few resources to get you started if this is your first Flutter project:
+</div>
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+---
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## ✨ About the Project
+
+**Rick and Morty Explorer** is a slick Flutter app that brings the **Rick and Morty API** to life:
+
+- 👽 **Browse characters** across the multiverse with smooth pagination
+- 🔎 **Search & filter** characters by name
+- 🗂️ **List / Grid view** toggle with a floating action button
+- 🧬 **Rich details** — status, species, gender, origin, location & episodes
+- 📡 **Offline‑aware** — skeleton loaders & informative network states
+
+Built with **Clean Architecture** (data → repository → BLoC → UI), animated cards, shimmer placeholders, offline banners, and even a *click* sound effect for that interactive touch. 🎵
+
+---
+
+## 🚀 Features
+
+| Feature | Description |
+|---|---|
+| 👽 **Character Browsing** | Paginated list across the Rick and Morty universe |
+| 🔎 **Search** | Live search by character name |
+| 🗂️ **List / Grid Toggle** | Switch layouts with a floating action button |
+| 🧬 **Details Page** | Status, species, type, gender, origin, location, episode count |
+| 🟢🔴 **Status Colors** | Color‑coded Alive / Dead / Unknown states |
+| 🖼️ **Precaching** | Smart image caching for a buttery scroll |
+| 📵 **Offline Support** | `flutter_offline` banner + cached content |
+| 💀 **Shimmer & Skeleton** | Beautiful loading placeholders |
+| 🎵 **Sound Effects** | Interactive click sounds |
+| 🎨 **Custom Theme** | Dark theme with the iconic Rick & Morty palette |
+
+---
+
+## 🧱 Tech Stack
+
+<div align="center">
+
+| 🛠️ Tool | Purpose |
+|---|---|
+| [Flutter](https://flutter.dev) | Cross‑platform UI framework |
+| [Dio](https://pub.dev/packages/dio) | Networking & API calls |
+| [flutter_bloc](https://pub.dev/packages/flutter_bloc) | State management |
+| [cached_network_image](https://pub.dev/packages/cached_network_image) | Image caching |
+| [skeletonizer](https://pub.dev/packages/skeletonizer) | Skeleton loading effects |
+| [flutter_offline](https://pub.dev/packages/flutter_offline) | Connectivity detection |
+| [audioplayers](https://pub.dev/packages/audioplayers) | Sound effects |
+| [provider](https://pub.dev/packages/provider) | Lightweight state helpers |
+
+</div>
+
+---
+
+## 📂 Project Structure
+
+```
+lib/
+├── main.dart                    # App entry point
+├── app_routes.dart              # Named routes + DI for repository/cubit
+├── constant/
+│   └── string.dart              # App constants & colors
+├── data/
+│   ├── API_services/            # Character web service (Dio)
+│   ├── model/                   # Character model
+│   └── repository/              # Character repository
+└── presentation/
+    ├── bloc/                    # Character cubit & state
+    ├── screens/                 # List & details screens
+    └── widgets/                 # Cards, header, loading & shared widgets
+```
+
+---
+
+## ✅ Getting Started
+
+### Prerequisites
+- 🦋 **Flutter SDK** `>= 3.10`
+
+### Installation
+
+```bash
+# 1️⃣ Clone the repository
+git clone https://github.com/moaz-nassef/rickandmorty.git
+cd rickandmorty
+
+# 2️⃣ Install dependencies
+flutter pub get
+
+# 3️⃣ Run the app
+flutter run
+```
+
+> No API key needed — the app uses the public **Rick and Morty API** endpoints for free. 🌐
+
+---
+
+## 🧭 Roadmap
+
+- [x] Paginated character list + search
+- [x] List / grid layout toggle
+- [x] Rich detail page & status colors
+- [x] Offline banner + skeleton loading
+- [ ] 🏡 Episodes & locations tabs
+- [ ] ⭐ Favorites & watchlist
+- [ ] 🔔 Character alerts (Alive/Dead changes)
+
+---
+
+## 🤝 Contributing
+
+Contributions are always welcome! 🎉
+
+1. 🍴 Fork the repository
+2. 🌿 Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. 💾 Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. 📤 Push to the branch (`git push origin feature/amazing-feature`)
+5. 🔀 Open a Pull Request
+
+---
+
+## 📞 Contact
+
+**Moaz Nassef** — [GitHub](https://github.com/moaz-nassef)
+
+---
+
+<div align="center">
+
+Made with 💜 using Flutter & the Rick and Morty API
+
+⭐ **Don't forget to star this repo if you like it!** ⭐
+
+</div>
