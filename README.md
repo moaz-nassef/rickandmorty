@@ -21,7 +21,8 @@
 - 🔎 **Search & filter** characters by name
 - 🗂️ **List / Grid view** toggle with a floating action button
 - 🧬 **Rich details** — status, species, gender, origin, location & episodes
-- 📡 **Offline‑aware** — skeleton loaders & informative network states
+- 🌀 **Living portal UI** — animated multiverse background, responsive to reduced-motion preferences
+- 📡 **Offline‑aware** — banner, retryable network errors and informative empty states
 
 Built with **Clean Architecture** (data → repository → BLoC → UI), animated cards, shimmer placeholders, offline banners, and even a *click* sound effect for that interactive touch. 🎵
 
@@ -40,6 +41,10 @@ Built with **Clean Architecture** (data → repository → BLoC → UI), animate
 | 📵 **Offline Support** | `flutter_offline` banner + cached content |
 | 💀 **Shimmer & Skeleton** | Beautiful loading placeholders |
 | 🎵 **Sound Effects** | Interactive click sounds |
+| 🌀 **Portal Background** | Animated, repaint-isolated portal backdrop that respects reduced-motion preferences |
+| 📶 **Network Feedback** | Offline banner, dedicated no-connection screen with retry, and search-empty state |
+| 🔍 **Character Preview** | Quick preview modal before diving into full details |
+| ⏭️ **Pagination Bar** | Clear next/previous navigation through the multiverse |
 | 🎨 **Custom Theme** | Dark theme with the iconic Rick & Morty palette |
 
 ---
@@ -58,6 +63,7 @@ Built with **Clean Architecture** (data → repository → BLoC → UI), animate
 | [flutter_offline](https://pub.dev/packages/flutter_offline) | Connectivity detection |
 | [audioplayers](https://pub.dev/packages/audioplayers) | Sound effects |
 | [provider](https://pub.dev/packages/provider) | Lightweight state helpers |
+| [auto_size_text](https://pub.dev/packages/auto_size_text) | Responsive labels across character cards |
 
 </div>
 
@@ -78,7 +84,8 @@ lib/
 └── presentation/
     ├── bloc/                    # Character cubit & state
     ├── screens/                 # List & details screens
-    └── widgets/                 # Cards, header, loading & shared widgets
+    └── widgets/                 # Cards, header, loading & shared feedback widgets
+        └── shared/              # Portal, offline banner, retry/error, preview & pagination
 ```
 
 ---
@@ -112,6 +119,9 @@ flutter run
 - [x] List / grid layout toggle
 - [x] Rich detail page & status colors
 - [x] Offline banner + skeleton loading
+- [x] Animated portal background + reduced-motion support
+- [x] Search-empty, no-network and retry experiences
+- [x] Character preview modal + pagination controls
 - [ ] 🏡 Episodes & locations tabs
 - [ ] ⭐ Favorites & watchlist
 - [ ] 🔔 Character alerts (Alive/Dead changes)
