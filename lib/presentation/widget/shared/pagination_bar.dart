@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/consstant/string.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 
 class PaginationBar extends StatefulWidget {
   final int currentPage;
@@ -99,11 +100,7 @@ class _PageButton extends StatelessWidget {
   final bool enabled;
   final VoidCallback? onTap;
 
-  const _PageButton({
-    required this.icon,
-    required this.enabled,
-    this.onTap,
-  });
+  const _PageButton({required this.icon, required this.enabled, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +108,12 @@ class _PageButton extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
-        onTap: enabled ? onTap : null,
+        onTap: enabled
+            ? () {
+                AppInteractionFeedback.tap();
+                onTap?.call();
+              }
+            : null,
         child: AnimatedScale(
           scale: enabled ? 1 : 0.85,
           duration: const Duration(milliseconds: 200),
@@ -142,10 +144,7 @@ class _PageIndicator extends StatelessWidget {
   final int currentPage;
   final int totalPages;
 
-  const _PageIndicator({
-    required this.currentPage,
-    required this.totalPages,
-  });
+  const _PageIndicator({required this.currentPage, required this.totalPages});
 
   @override
   Widget build(BuildContext context) {

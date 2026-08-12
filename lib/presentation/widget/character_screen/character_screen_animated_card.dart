@@ -4,6 +4,7 @@ import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_grid_card.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/character_screen_layout_mode.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 import 'package:rickandmorty/presentation/widget/shared/character_preview_modal.dart';
 
 class CharacterScreenAnimatedCard extends StatefulWidget {
@@ -37,9 +38,12 @@ class _CharacterScreenAnimatedCardState
         ? CharacterScreenGridCard(character: widget.character)
         : CharacterScreenCard(character: widget.character);
 
+    final reducedMotion = MediaQuery.disableAnimationsOf(context);
+
     return RepaintBoundary(
       child: GestureDetector(
         onTap: () {
+          AppInteractionFeedback.success();
           Navigator.pushNamed(
             context,
             CharacterDetailScreen,
@@ -47,12 +51,14 @@ class _CharacterScreenAnimatedCardState
           );
         },
         onLongPressStart: (_) {
+          AppInteractionFeedback.tap();
           showCharacterPreview(context, widget.character);
         },
         child: TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),
-          duration:
-              Duration(milliseconds: 420 + (widget.index % 8) * 70),
+          duration: reducedMotion
+              ? Duration.zero
+              : Duration(milliseconds: 420 + (widget.index % 8) * 70),
           curve: Curves.easeOutCubic,
           builder: (context, value, child) {
             return Opacity(

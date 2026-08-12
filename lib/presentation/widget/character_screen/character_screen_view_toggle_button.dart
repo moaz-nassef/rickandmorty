@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/character_screen_layout_mode.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 
 class CharacterScreenViewToggleButton extends StatelessWidget {
   final CharacterScreenLayoutMode layoutMode;
@@ -21,6 +22,7 @@ class CharacterScreenViewToggleButton extends StatelessWidget {
       foregroundColor: const Color(0xff132318),
       tooltip: isGrid ? 'List view' : 'Grid view',
       onPressed: () {
+        AppInteractionFeedback.tap();
         onLayoutModeChanged(
           isGrid
               ? CharacterScreenLayoutMode.list

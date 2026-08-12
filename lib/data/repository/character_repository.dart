@@ -1,6 +1,16 @@
 import 'dart:async';
+import 'package:dio/dio.dart';
 import 'package:rickandmorty/data/API_services/character_web_service.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
+
+class NetworkException implements Exception {
+  NetworkException();
+}
+
+class NotFoundException implements Exception {
+  final String message;
+  NotFoundException(this.message);
+}
 
 class CharactersPageResult {
   final List<Character> characters;
@@ -40,33 +50,61 @@ class CharacterRepository {
   }
 
   Future<CharactersPageResult> _fetchAndCachePage(int page) async {
-  for (int attempt = 0; attempt < _maxRetries; attempt++) {
-    try {
-      final result = await _characterWebService.getCharactersPage(page);
-      _pageCache[page] = List.from(result.characters);
-      _totalPages = result.totalPages;
-      return CharactersPageResult(
-        characters: List.from(result.characters),
-        totalPages: result.totalPages,
-      );
-    } catch (e) {
-      await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
-
-      if (attempt == _maxRetries - 1) {
-        if (_pageCache.isNotEmpty) {
-          final fallback = _pageCache.entries.first;
-          return CharactersPageResult(
-            characters: List.from(fallback.value),
-            totalPages: _totalPages,
-            fromCache: true,
-          );
+    for (int attempt = 0; attempt < _maxRetries; attempt++) {
+      try {
+        final result = await _characterWebService.getCharactersPage(page);
+        _pageCache[page] = List.from(result.characters);
+        _totalPages = result.totalPages;
+        return CharactersPageResult(
+          characters: List.from(result.characters),
+          totalPages: result.totalPages,
+        );
+      } on DioException catch (e) {
+        // Network errors: timeout, connection error, unknown
+        if (e.type == DioExceptionType.connectionTimeout ||
+            e.type == DioExceptionType.receiveTimeout ||
+            e.type == DioExceptionType.connectionError ||
+            e.type == DioExceptionType.unknown) {
+          throw NetworkException();
         }
-        rethrow;
+        // 404 Not Found
+        if (e.type == DioExceptionType.badResponse &&
+            e.response?.statusCode == 404) {
+          throw NotFoundException('Character not found');
+        }
+        // Other Dio errors will be retried
+        await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
+
+        if (attempt == _maxRetries - 1) {
+          if (_pageCache.isNotEmpty) {
+            final fallback = _pageCache.entries.first;
+            return CharactersPageResult(
+              characters: List.from(fallback.value),
+              totalPages: _totalPages,
+              fromCache: true,
+            );
+          }
+          rethrow;
+        }
+      } catch (e) {
+        // Other exceptions (non-Dio) will be retried
+        await Future.delayed(Duration(seconds: 2 * (attempt + 1)));
+
+        if (attempt == _maxRetries - 1) {
+          if (_pageCache.isNotEmpty) {
+            final fallback = _pageCache.entries.first;
+            return CharactersPageResult(
+              characters: List.from(fallback.value),
+              totalPages: _totalPages,
+              fromCache: true,
+            );
+          }
+          rethrow;
+        }
       }
     }
+    throw Exception('Failed to load page $page');
   }
-  throw Exception('Failed to load page $page');
-}
 
   Future<Character> getCharacterById(int id) async {
     final cached =

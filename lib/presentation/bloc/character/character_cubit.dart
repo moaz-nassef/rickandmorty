@@ -60,12 +60,54 @@ class CharacterCubit extends Cubit<CharacterState> {
       final result = await characterRepository.getCharactersPage(page);
       _isLoadingPage = false;
       _isInitialLoad = false;
+      
+      // Handle empty list case
+      if (result.characters.isEmpty) {
+        emit(CharacterSearchEmpty());
+        return;
+      }
+      
       emit(CharactersLoaded(
         result.characters,
         currentPage: page,
         totalPages: result.totalPages,
       ));
       _prefetchNext(page);
+    } on NetworkException {
+      _isLoadingPage = false;
+      _isInitialLoad = false;
+      
+      if (hasCache) {
+        // We have cached data, show offline with cache
+        final pages = characterRepository.cachedPages.toList()..sort();
+        if (pages.isNotEmpty) {
+          // Check if the requested page is cached
+          if (characterRepository.isPageCached(page)) {
+            final cached = await characterRepository.getCharactersPage(page);
+            emit(CharacterOfflineWithCache(
+              cachedCharacters: cached.characters,
+              currentPage: page,
+              totalPages: cached.totalPages,
+            ));
+          } else {
+            // Page not cached, show first available cached page
+            final fallback = await characterRepository.getCharactersPage(pages.first);
+            emit(CharacterOfflineWithCache(
+              cachedCharacters: fallback.characters,
+              currentPage: pages.first,
+              totalPages: fallback.totalPages,
+            ));
+          }
+        } else {
+          emit(CharacterNetworkError());
+        }
+      } else {
+        emit(CharacterNetworkError());
+      }
+    } on NotFoundException {
+      _isLoadingPage = false;
+      _isInitialLoad = false;
+      emit(CharacterSearchEmpty());
     } catch (e) {
       _isLoadingPage = false;
       _isInitialLoad = false;
@@ -102,6 +144,9 @@ class CharacterCubit extends Cubit<CharacterState> {
   int get _currentPage {
     if (state is CharactersLoaded) {
       return (state as CharactersLoaded).currentPage;
+    }
+    if (state is CharacterOfflineWithCache) {
+      return (state as CharacterOfflineWithCache).currentPage;
     }
     return 1;
   }
@@ -151,7 +196,11 @@ class CharacterCubit extends Cubit<CharacterState> {
           .where((c) => c.name.toLowerCase().contains(query))
           .toList();
 
-      emit(CharactersLoaded(filtered, currentPage: 1, totalPages: 1));
+      if (filtered.isEmpty) {
+        emit(CharacterSearchEmpty());
+      } else {
+        emit(CharactersLoaded(filtered, currentPage: 1, totalPages: 1));
+      }
     });
   }
 

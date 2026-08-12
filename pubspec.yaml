@@ -39,11 +39,14 @@ dependencies:
   cached_network_image: ^3.4.1
   auto_size_text: ^3.0.0
   audioplayers: ^6.7.1
+  provider: ^6.1.5+1
+
 
 dev_dependencies:
   flutter_lints: ^6.0.0
   flutter_test:
     sdk: flutter
+  test: ^1.24.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -57,6 +60,7 @@ flutter:
   assets:
     - asset/images/iconsremo.png
     - asset/images/loding.png
+    - asset/images/wifi_off.png
     - asset/images/
     - assets/sounds/
   #    - images/

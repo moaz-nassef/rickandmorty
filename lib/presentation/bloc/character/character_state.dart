@@ -30,12 +30,12 @@ final class CharactersLoaded extends CharacterState {
 
   @override
   List<Object?> get props => [
-        characters,
-        currentPage,
-        totalPages,
-        isLoadingPage,
-        errorMessage,
-      ];
+    characters,
+    currentPage,
+    totalPages,
+    isLoadingPage,
+    errorMessage,
+  ];
 }
 
 final class CharacterDetailsLoaded extends CharacterState {
@@ -54,4 +54,33 @@ final class CharacterFailure extends CharacterState {
 
   @override
   List<Object?> get props => [message];
+}
+
+final class CharacterSearchEmpty extends CharacterState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class CharacterNetworkError extends CharacterState {
+  @override
+  List<Object?> get props => [];
+}
+
+final class CharacterOfflineWithCache extends CharacterState {
+  final List<Character> cachedCharacters;
+  final int currentPage;
+  final int totalPages;
+
+  CharacterOfflineWithCache({
+    required this.cachedCharacters,
+    required this.currentPage,
+    required this.totalPages,
+  });
+
+  @override
+  List<Object?> get props => [
+    cachedCharacters,
+    currentPage,
+    totalPages,
+  ];
 }

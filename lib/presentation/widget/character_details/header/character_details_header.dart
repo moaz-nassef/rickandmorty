@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
@@ -84,7 +85,10 @@ class CharacterDetailsHeader extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => Navigator.pop(context),
+        onTap: () {
+          AppInteractionFeedback.tap();
+          Navigator.pop(context);
+        },
         child: Container(
           width: 48,
           height: 48,
@@ -135,7 +139,10 @@ class CharacterDetailsHeader extends StatelessWidget {
             spreadRadius: 4,
           ),
         ],
-        border: Border.all(color: Colors.white.withValues(alpha: 0.2), width: 3),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.2),
+          width: 3,
+        ),
       ),
       child: ClipRRect(
         borderRadius: borderRadius,
@@ -164,7 +171,10 @@ class CharacterDetailsHeader extends StatelessWidget {
       decoration: BoxDecoration(
         color: const Color(0xff1e282f),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: statusColor.withValues(alpha: 0.9), width: 1.5),
+        border: Border.all(
+          color: statusColor.withValues(alpha: 0.9),
+          width: 1.5,
+        ),
         boxShadow: [
           BoxShadow(
             color: statusColor.withValues(alpha: 0.5),

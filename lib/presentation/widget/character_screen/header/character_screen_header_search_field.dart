@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/consstant/string.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 
 class CharacterScreenHeaderSearchField extends StatelessWidget {
   final TextEditingController searchController;
@@ -28,10 +29,7 @@ class CharacterScreenHeaderSearchField extends StatelessWidget {
           color: Mycoloer.mywhite.withValues(alpha: .46),
           fontWeight: FontWeight.w500,
         ),
-        prefixIcon: const Icon(
-          Icons.search_rounded,
-          color: Mycoloer.myyellow,
-        ),
+        prefixIcon: const Icon(Icons.search_rounded, color: Mycoloer.myyellow),
         suffixIcon: ValueListenableBuilder<TextEditingValue>(
           valueListenable: searchController,
           builder: (context, value, _) {
@@ -41,11 +39,9 @@ class CharacterScreenHeaderSearchField extends StatelessWidget {
 
             return IconButton(
               tooltip: 'Clear',
-              icon: const Icon(
-                Icons.close_rounded,
-                color: Mycoloer.mywhite,
-              ),
+              icon: const Icon(Icons.close_rounded, color: Mycoloer.mywhite),
               onPressed: () {
+                AppInteractionFeedback.tap();
                 searchController.clear();
                 context.read<CharacterCubit>().searchCharacters('');
               },
@@ -62,10 +58,7 @@ class CharacterScreenHeaderSearchField extends StatelessWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(
-            color: Mycoloer.myyellow,
-            width: 1.3,
-          ),
+          borderSide: const BorderSide(color: Mycoloer.myyellow, width: 1.3),
         ),
       ),
     );

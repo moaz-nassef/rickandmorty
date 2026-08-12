@@ -1,13 +1,11 @@
-import 'dart:async';
 import 'dart:ui' show ImageFilter;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:rickandmorty/consstant/string.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 import 'package:rickandmorty/presentation/widget/shared/shimmer_placeholder.dart';
 
 void showCharacterPreview(BuildContext context, Character character) {
@@ -34,7 +32,6 @@ class _CharacterPreviewModalState extends State<_CharacterPreviewModal>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _contentFade;
-  final AudioPlayer _player = AudioPlayer();
   Color? _statusColor;
   bool _dismissing = false;
 
@@ -50,24 +47,14 @@ class _CharacterPreviewModalState extends State<_CharacterPreviewModal>
       parent: _controller,
       curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
     );
-    HapticFeedback.lightImpact();
-    unawaited(_playSound());
+    AppInteractionFeedback.success();
     _controller.forward();
-  }
-
-  Future<void> _playSound() async {
-    try {
-      await _player.stop();
-      await _player.setSource(AssetSource('sounds/click.wav'));
-      await _player.resume();
-    } catch (_) {}
   }
 
   void _dismiss() {
     if (_dismissing) return;
     _dismissing = true;
-    HapticFeedback.lightImpact();
-    unawaited(_playSound());
+    AppInteractionFeedback.tap();
     _controller.reverse().then((_) {
       if (mounted) {
         Navigator.of(context, rootNavigator: true).pop();
@@ -78,7 +65,6 @@ class _CharacterPreviewModalState extends State<_CharacterPreviewModal>
   @override
   void dispose() {
     _controller.dispose();
-    _player.dispose();
     super.dispose();
   }
 
@@ -338,7 +324,10 @@ class _InfoRow extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           '$label: ',
-          style: const TextStyle(color: Color.fromARGB(155, 50, 254, 14), fontSize: 11),
+          style: const TextStyle(
+            color: Color.fromARGB(155, 50, 254, 14),
+            fontSize: 11,
+          ),
         ),
         Expanded(
           child: Text(

@@ -4,6 +4,7 @@ import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/presentation/widget/character_details/character_details_content.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CharacterDetailsScreen extends StatefulWidget {
@@ -108,19 +109,27 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen>
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.error_outline_rounded,
-                  color: Color(0xffffc107), size: 56),
+              const Icon(
+                Icons.error_outline_rounded,
+                color: Color(0xffffc107),
+                size: 56,
+              ),
               const SizedBox(height: 16),
-              Text(message,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(color: Color(0xffE5E8EB))),
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: const TextStyle(color: Color(0xffE5E8EB)),
+              ),
               const SizedBox(height: 16),
               FilledButton.icon(
                 style: FilledButton.styleFrom(
                   backgroundColor: Color(0xffffc107),
                   foregroundColor: Color(0xff132318),
                 ),
-                onPressed: () => Navigator.pop(context),
+                onPressed: () {
+                  AppInteractionFeedback.tap();
+                  Navigator.pop(context);
+                },
                 icon: const Icon(Icons.arrow_back_rounded),
                 label: const Text('Go back'),
               ),
