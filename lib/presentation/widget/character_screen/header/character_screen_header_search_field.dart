@@ -14,53 +14,75 @@ class CharacterScreenHeaderSearchField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: searchController,
-      cursorColor: Mycoloer.myyellow,
-      style: const TextStyle(
-        color: Mycoloer.mywhite,
-        fontSize: 16,
-        fontWeight: FontWeight.w600,
-      ),
-      onChanged: context.read<CharacterCubit>().searchCharacters,
-      decoration: InputDecoration(
-        hintText: 'Search characters',
-        hintStyle: TextStyle(
-          color: Mycoloer.mywhite.withValues(alpha: .46),
-          fontWeight: FontWeight.w500,
-        ),
-        prefixIcon: const Icon(Icons.search_rounded, color: Mycoloer.myyellow),
-        suffixIcon: ValueListenableBuilder<TextEditingValue>(
-          valueListenable: searchController,
-          builder: (context, value, _) {
-            if (value.text.isEmpty) {
-              return const SizedBox.shrink();
-            }
-
-            return IconButton(
-              tooltip: 'Clear',
-              icon: const Icon(Icons.close_rounded, color: Mycoloer.mywhite),
-              onPressed: () {
-                AppInteractionFeedback.tap();
-                searchController.clear();
-                context.read<CharacterCubit>().searchCharacters('');
-              },
-            );
-          },
-        ),
-        filled: true,
-        fillColor: const Color(0xff243037),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: BorderSide(
-            color: Mycoloer.mywhite.withValues(alpha: .08),
+    return ValueListenableBuilder<TextEditingValue>(
+      valueListenable: searchController,
+      builder: (context, value, _) {
+        final hasQuery = value.text.isNotEmpty;
+        return AnimatedContainer(
+          duration: const Duration(milliseconds: 220),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: hasQuery
+                ? [
+                    BoxShadow(
+                      color: Mycoloer.myyellow.withValues(alpha: 0.12),
+                      blurRadius: 22,
+                    ),
+                  ]
+                : const [],
           ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(18),
-          borderSide: const BorderSide(color: Mycoloer.myyellow, width: 1.3),
-        ),
-      ),
+          child: TextField(
+            controller: searchController,
+            cursorColor: Mycoloer.myyellow,
+            style: const TextStyle(
+              color: Mycoloer.mywhite,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
+            onChanged: context.read<CharacterCubit>().searchCharacters,
+            decoration: InputDecoration(
+              hintText: 'Search characters',
+              hintStyle: TextStyle(
+                color: Mycoloer.mywhite.withValues(alpha: .46),
+                fontWeight: FontWeight.w500,
+              ),
+              prefixIcon: const Icon(
+                Icons.search_rounded,
+                color: Mycoloer.myyellow,
+              ),
+              suffixIcon: hasQuery
+                  ? IconButton(
+                      tooltip: 'Clear',
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Mycoloer.mywhite,
+                      ),
+                      onPressed: () {
+                        AppInteractionFeedback.tap();
+                        searchController.clear();
+                        context.read<CharacterCubit>().searchCharacters('');
+                      },
+                    )
+                  : null,
+              filled: true,
+              fillColor: const Color(0xff243037),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: BorderSide(
+                  color: Mycoloer.mywhite.withValues(alpha: .08),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(
+                  color: Mycoloer.myyellow,
+                  width: 1.3,
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

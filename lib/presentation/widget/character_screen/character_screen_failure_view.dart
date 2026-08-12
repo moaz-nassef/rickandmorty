@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/consstant/string.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 
 class CharacterScreenFailureView extends StatelessWidget {
   final String message;
@@ -15,12 +16,26 @@ class CharacterScreenFailureView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.wifi_off_rounded,
-            color: Mycoloer.myyellow,
-            size: 54,
+          Container(
+            width: 158,
+            height: 158,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xff102126).withValues(alpha: 0.72),
+              border: Border.all(
+                color: Mycoloer.myyellow.withValues(alpha: 0.16),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: const Color(0xff29c9c0).withValues(alpha: 0.12),
+                  blurRadius: 32,
+                ),
+              ],
+            ),
+            child: Image.asset('asset/images/wifi_off.png'),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 24),
           const Text(
             'Portal disconnected',
             textAlign: TextAlign.center,
@@ -51,7 +66,10 @@ class CharacterScreenFailureView extends StatelessWidget {
                 borderRadius: BorderRadius.circular(14),
               ),
             ),
-            onPressed: () => context.read<CharacterCubit>().loadPage(1),
+            onPressed: () {
+              AppInteractionFeedback.tap();
+              context.read<CharacterCubit>().loadPage(1);
+            },
             icon: const Icon(Icons.refresh_rounded),
             label: const Text('Try again'),
           ),

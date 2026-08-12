@@ -9,9 +9,7 @@ import 'package:rickandmorty/presentation/screens/Character_Screen.dart';
 
 void main() {
   testWidgets('renders the character discovery screen', (tester) async {
-    final cubit = CharacterCubit(
-      CharacterRepository(_TestCharacterWebService()),
-    );
+    final cubit = _createCubit();
     await cubit.loadPage(1);
 
     await tester.pumpWidget(
@@ -24,6 +22,35 @@ void main() {
 
     await cubit.close();
   });
+
+  testWidgets('shows no results and restores the list after clearing search', (
+    tester,
+  ) async {
+    final cubit = _createCubit();
+    await cubit.loadPage(1);
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: BlocProvider.value(value: cubit, child: const CharacterScreen()),
+      ),
+    );
+
+    await tester.enterText(find.byType(TextField), 'Birdperson');
+    await tester.pump(const Duration(milliseconds: 350));
+
+    expect(find.text('No portal match found'), findsOneWidget);
+    expect(find.text('Opening the portal...'), findsNothing);
+
+    await tester.tap(find.byKey(const Key('clear_search_button')));
+    await tester.pump();
+
+    expect(find.text('Rick Sanchez'), findsOneWidget);
+    await cubit.close();
+  });
+}
+
+CharacterCubit _createCubit() {
+  return CharacterCubit(CharacterRepository(_TestCharacterWebService()));
 }
 
 class _TestCharacterWebService extends CharacterWebService {

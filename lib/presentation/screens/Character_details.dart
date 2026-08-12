@@ -5,6 +5,7 @@ import 'package:rickandmorty/presentation/bloc/character/character_cubit.dart';
 import 'package:rickandmorty/presentation/widget/character_details/character_details_content.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
 import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
+import 'package:rickandmorty/presentation/widget/shared/portal_background.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 class CharacterDetailsScreen extends StatefulWidget {
@@ -80,20 +81,22 @@ class _CharacterDetailsScreenState extends State<CharacterDetailsScreen>
     final statusColor = characterScreenCardStatusColor(character.status);
 
     return Scaffold(
-      backgroundColor: const Color(0xff343A40),
-      body: SafeArea(
-        child: Skeletonizer(
-          enabled: _isLoading,
-          effect: ShimmerEffect(
-            baseColor: const Color(0xff1e282f),
-            highlightColor: const Color(0xff2c3842),
-          ),
-          child: CharacterDetailsContent(
-            character: character,
-            imageScale: _imageScale,
-            contentFade: _contentFade,
-            staggerController: _staggerController,
-            statusColor: statusColor,
+      backgroundColor: Colors.transparent,
+      body: PortalBackground(
+        child: SafeArea(
+          child: Skeletonizer(
+            enabled: _isLoading,
+            effect: ShimmerEffect(
+              baseColor: const Color(0xff1e282f),
+              highlightColor: const Color(0xff2c3842),
+            ),
+            child: CharacterDetailsContent(
+              character: character,
+              imageScale: _imageScale,
+              contentFade: _contentFade,
+              staggerController: _staggerController,
+              statusColor: statusColor,
+            ),
           ),
         ),
       ),

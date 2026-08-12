@@ -9,6 +9,8 @@ import 'package:rickandmorty/presentation/widget/character_screen/character_scre
 import 'package:rickandmorty/presentation/widget/character_screen/character_screen_view_toggle_button.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/header/character_screen_header.dart';
 import 'package:rickandmorty/presentation/widget/shared/pagination_bar.dart';
+import 'package:rickandmorty/presentation/widget/shared/offline_banner_widget.dart';
+import 'package:rickandmorty/presentation/widget/shared/portal_background.dart';
 
 class CharacterScreen extends StatefulWidget {
   const CharacterScreen({super.key});
@@ -28,8 +30,7 @@ class _CharacterScreenState extends State<CharacterScreen> {
     super.dispose();
   }
 
-  void _precachePageImages(BuildContext context, int page,
-      {int limit = 6}) {
+  void _precachePageImages(BuildContext context, int page, {int limit = 6}) {
     if (_precachedImagePages.contains(page)) return;
     _precachedImagePages.add(page);
 
@@ -47,10 +48,15 @@ class _CharacterScreenState extends State<CharacterScreen> {
     }
   }
 
+  void _clearSearch() {
+    searchController.clear();
+    context.read<CharacterCubit>().searchCharacters('');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Mycoloer.mygray,
+      backgroundColor: Colors.transparent,
       floatingActionButton: CharacterScreenViewToggleButton(
         layoutMode: layoutMode,
         onLayoutModeChanged: (mode) => setState(() => layoutMode = mode),
@@ -71,95 +77,122 @@ class _CharacterScreenState extends State<CharacterScreen> {
                 action: SnackBarAction(
                   label: 'Retry',
                   textColor: Mycoloer.myyellow,
-                  onPressed: () =>
-                      context.read<CharacterCubit>().loadPage(state.currentPage),
+                  onPressed: () => context.read<CharacterCubit>().loadPage(
+                    state.currentPage,
+                  ),
                 ),
               ),
             );
           }
         },
-        child: Stack(
-          children: [
-            SafeArea(
-              child: CustomScrollView(
-                physics: const BouncingScrollPhysics(),
-                scrollCacheExtent: ScrollCacheExtent.pixels(
-                    MediaQuery.sizeOf(context).height),
-                slivers: [
-                  SliverToBoxAdapter(
-                    child: CharacterScreenHeader(
-                        searchController: searchController),
+        child: PortalBackground(
+          child: Stack(
+            children: [
+              SafeArea(
+                child: CustomScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  scrollCacheExtent: ScrollCacheExtent.pixels(
+                    MediaQuery.sizeOf(context).height,
                   ),
-                  CharacterScreenCharactersSliver(layoutMode: layoutMode),
-                  SliverToBoxAdapter(
-                    child: BlocBuilder<CharacterCubit, CharacterState>(
-                      buildWhen: (prev, current) =>
-                          current is CharactersLoaded &&
-                          current.isLoadingPage !=
-                              (prev is CharactersLoaded
-                                  ? prev.isLoadingPage
-                                  : false),
-                      builder: (context, state) {
-                        final isLoading = state is CharactersLoaded
-                            ? state.isLoadingPage
-                            : false;
-                        if (isLoading) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(vertical: 16),
-                            child: Center(
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2.5,
-                                  color: Mycoloer.myyellow,
+                  slivers: [
+                    SliverToBoxAdapter(
+                      child: CharacterScreenHeader(
+                        searchController: searchController,
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: BlocBuilder<CharacterCubit, CharacterState>(
+                        builder: (context, state) {
+                          if (state is! CharacterOfflineWithCache) {
+                            return const SizedBox.shrink();
+                          }
+                          return OfflineBannerWidget(
+                            onRetry: () => context
+                                .read<CharacterCubit>()
+                                .loadPage(state.currentPage),
+                          );
+                        },
+                      ),
+                    ),
+                    CharacterScreenCharactersSliver(
+                      layoutMode: layoutMode,
+                      onClearSearch: _clearSearch,
+                    ),
+                    SliverToBoxAdapter(
+                      child: BlocBuilder<CharacterCubit, CharacterState>(
+                        buildWhen: (prev, current) =>
+                            current is CharactersLoaded &&
+                            current.isLoadingPage !=
+                                (prev is CharactersLoaded
+                                    ? prev.isLoadingPage
+                                    : false),
+                        builder: (context, state) {
+                          final isLoading = state is CharactersLoaded
+                              ? state.isLoadingPage
+                              : false;
+                          if (isLoading) {
+                            return const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 16),
+                              child: Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.5,
+                                    color: Mycoloer.myyellow,
+                                  ),
                                 ),
                               ),
-                            ),
+                            );
+                          }
+                          return const SizedBox(height: 24);
+                        },
+                      ),
+                    ),
+                    SliverToBoxAdapter(
+                      child: BlocBuilder<CharacterCubit, CharacterState>(
+                        buildWhen: (prev, current) =>
+                            current is CharactersLoaded,
+                        builder: (context, state) {
+                          if (state is! CharactersLoaded ||
+                              searchController.text.trim().isNotEmpty) {
+                            return const SizedBox.shrink();
+                          }
+                          return PaginationBar(
+                            currentPage: state.currentPage,
+                            totalPages: state.totalPages,
+                            onPrevious: state.currentPage > 1
+                                ? () => context
+                                      .read<CharacterCubit>()
+                                      .previousPage()
+                                : null,
+                            onNext: state.currentPage < state.totalPages
+                                ? () =>
+                                      context.read<CharacterCubit>().nextPage()
+                                : null,
                           );
-                        }
-                        return const SizedBox(height: 24);
-                      },
+                        },
+                      ),
                     ),
-                  ),
-                  SliverToBoxAdapter(
-                    child: BlocBuilder<CharacterCubit, CharacterState>(
-                      buildWhen: (prev, current) =>
-                          current is CharactersLoaded,
-                      builder: (context, state) {
-                        if (state is! CharactersLoaded) {
-                          return const SizedBox.shrink();
-                        }
-                        return PaginationBar(
-                          currentPage: state.currentPage,
-                          totalPages: state.totalPages,
-                          onPrevious: state.currentPage > 1
-                              ? () => context
-                                  .read<CharacterCubit>()
-                                  .previousPage()
-                              : null,
-                          onNext: state.currentPage < state.totalPages
-                              ? () =>
-                                  context.read<CharacterCubit>().nextPage()
-                              : null,
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            BlocListener<CharacterCubit, CharacterState>(
-              listenWhen: (_, current) =>
-                  current is CharactersLoaded && !current.isLoadingPage,
-              listener: (context, state) {
-                if (state is CharactersLoaded) {
-                  _precachePageImages(context, state.currentPage + 1, limit: 6);
-                }
-              },
-              child: const SizedBox.shrink(),
-            ),
-          ],
+              BlocListener<CharacterCubit, CharacterState>(
+                listenWhen: (_, current) =>
+                    current is CharactersLoaded && !current.isLoadingPage,
+                listener: (context, state) {
+                  if (state is CharactersLoaded) {
+                    _precachePageImages(
+                      context,
+                      state.currentPage + 1,
+                      limit: 6,
+                    );
+                  }
+                },
+                child: const SizedBox.shrink(),
+              ),
+            ],
+          ),
         ),
       ),
     );

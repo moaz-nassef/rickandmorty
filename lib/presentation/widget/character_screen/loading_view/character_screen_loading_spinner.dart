@@ -32,6 +32,14 @@ class _CharacterScreenLoadingSpinnerState
 
   @override
   Widget build(BuildContext context) {
+    if (MediaQuery.disableAnimationsOf(context)) {
+      return const SizedBox(
+        width: 112,
+        height: 112,
+        child: CharacterScreenLoadingProgressRing(),
+      );
+    }
+
     return SizedBox(
       width: 112,
       height: 112,

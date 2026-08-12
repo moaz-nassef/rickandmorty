@@ -10,12 +10,12 @@ class CharacterScreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
+      padding: const EdgeInsets.fromLTRB(18, 22, 18, 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const CharacterScreenHeaderBrandingRow(),
-          const SizedBox(height: 22),
+          const SizedBox(height: 24),
           CharacterScreenHeaderSearchField(searchController: searchController),
         ],
       ),

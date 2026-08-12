@@ -1,9 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:rickandmorty/consstant/string.dart';
+import 'package:flutter/material.dart';
 import 'package:rickandmorty/data/model/characterModel.dart';
 import 'package:rickandmorty/presentation/widget/character_screen/card/character_screen_card_status_color.dart';
-import 'package:rickandmorty/presentation/widget/character_screen/character_screen_info_pill.dart';
 import 'package:rickandmorty/presentation/widget/shared/shimmer_placeholder.dart';
 
 class CharacterScreenGridCard extends StatelessWidget {
@@ -15,145 +13,143 @@ class CharacterScreenGridCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = characterScreenCardStatusColor(character.status);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(28),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(28),
-          splashColor: Colors.white.withValues(alpha: 0.15),
-          child: Ink(
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: const LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Color(0xfffbfff4),
-                  Color(0xffd9ff75),
-                  Color(0xff69c249),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: const Color(0xff17272c).withValues(alpha: 0.94),
+        borderRadius: BorderRadius.circular(26),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.09)),
+        boxShadow: [
+          BoxShadow(
+            color: statusColor.withValues(alpha: 0.12),
+            blurRadius: 22,
+            offset: const Offset(0, 12),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(25),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Stack(
+                fit: StackFit.expand,
+                children: [
+                  Hero(
+                    tag: 'character-image-${character.charid}',
+                    child: CachedNetworkImage(
+                      imageUrl: character.image,
+                      fit: BoxFit.cover,
+                      placeholder: (_, _) => const ShimmerPlaceholder(),
+                      errorWidget: (_, _, _) => const ColoredBox(
+                        color: Color(0xff243037),
+                        child: Icon(
+                          Icons.person_rounded,
+                          color: Colors.white,
+                          size: 48,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0x10000000), Color(0x99000000)],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: _GridIdLabel(id: character.charid),
+                  ),
+                  Positioned(
+                    right: 10,
+                    bottom: 10,
+                    child: _GridStatusDot(color: statusColor),
+                  ),
                 ],
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.12),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                ),
-              ],
-              border: Border.all(
-                color: Colors.white.withValues(alpha: 0.35),
-                width: 1.3,
-              ),
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 1),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(14, 12, 14, 14),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Text(
-                        '#${character.charid.toString().padLeft(3, '0')}',
-                        style: TextStyle(
-                          color: const Color(0xff17261d).withValues(alpha: .72),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 1),
-                  Expanded(
-                    child: Hero(
-                      tag: 'character-image-${character.charid}',
-                      child: AspectRatio(
-                        aspectRatio: 1,
-                        child: Container(
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            color: const Color(0xff243037),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(24),
-                            child: CachedNetworkImage(
-                              imageUrl: character.image,
-                              fit: BoxFit.cover,
-                              placeholder: (_, _) => const ShimmerPlaceholder(
-                                borderRadius: BorderRadius.all(Radius.circular(24)),
-                              ),
-                              errorWidget: (_, _, _) => const ColoredBox(
-                                color: Color(0xff243037),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.person_rounded,
-                                    color: Mycoloer.mywhite,
-                                    size: 44,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
                   Text(
                     character.name,
-                    maxLines: 2,
+                    maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center,
                     style: const TextStyle(
-                      color: Color(0xff122417),
-                      fontSize: 17,
+                      color: Colors.white,
+                      fontSize: 16,
                       fontWeight: FontWeight.w900,
-                      height: 1.2,
                     ),
                   ),
-                  const SizedBox(height: 5),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Wrap(
-                      spacing: 1,
-                      runSpacing: 1,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        CharacterScreenInfoPill(
-                          label: character.status,
-                          color: statusColor,
-                        ),
-                        const SizedBox(width: 3),
-                        CharacterScreenInfoPill(
-                          label: character.species,
-                          color: const Color(0xff243037),
-                        ),
-                        const SizedBox(width: 3),
-                        CharacterScreenInfoPill(
-                          label: character.gender,
-                          color: const Color(0xff243037),
-                        ),
-                      ],
+                  const SizedBox(height: 4),
+                  Text(
+                    '${character.species}  |  ${character.gender}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: Colors.white.withValues(alpha: 0.58),
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 3),
                 ],
               ),
             ),
-          ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class _GridIdLabel extends StatelessWidget {
+  final int id;
+
+  const _GridIdLabel({required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        color: const Color(0xff101a21).withValues(alpha: 0.76),
+        borderRadius: BorderRadius.circular(99),
+      ),
+      child: Text(
+        '#${id.toString().padLeft(3, '0')}',
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 0.8,
+        ),
+      ),
+    );
+  }
+}
+
+class _GridStatusDot extends StatelessWidget {
+  final Color color;
+
+  const _GridStatusDot({required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 13,
+      height: 13,
+      decoration: BoxDecoration(
+        color: color,
+        shape: BoxShape.circle,
+        border: Border.all(color: Colors.white, width: 2),
+        boxShadow: [BoxShadow(color: color, blurRadius: 8)],
       ),
     );
   }

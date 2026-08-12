@@ -10,10 +10,12 @@ import 'package:rickandmorty/presentation/widget/character_screen/loading_view/c
 
 class CharacterScreenCharactersSliver extends StatelessWidget {
   final CharacterScreenLayoutMode layoutMode;
+  final VoidCallback onClearSearch;
 
   const CharacterScreenCharactersSliver({
     super.key,
     required this.layoutMode,
+    required this.onClearSearch,
   });
 
   @override
@@ -41,11 +43,38 @@ class CharacterScreenCharactersSliver extends StatelessWidget {
           );
         }
 
+        if (state is CharacterSearchEmpty) {
+          return SliverFillRemaining(
+            hasScrollBody: false,
+            child: CharacterScreenEmptyView(onClearSearch: onClearSearch),
+          );
+        }
+
+        if (state is CharacterNetworkError) {
+          return const SliverFillRemaining(
+            hasScrollBody: false,
+            child: CharacterScreenFailureView(
+              message: 'Check your connection, then reopen the portal.',
+            ),
+          );
+        }
+
+        if (state is CharacterOfflineWithCache) {
+          if (layoutMode == CharacterScreenLayoutMode.grid) {
+            return _buildGrid(
+              context,
+              state.cachedCharacters,
+              state.currentPage,
+            );
+          }
+          return _buildList(context, state.cachedCharacters, state.currentPage);
+        }
+
         if (state is CharactersLoaded) {
           if (state.characters.isEmpty) {
-            return const SliverFillRemaining(
+            return SliverFillRemaining(
               hasScrollBody: false,
-              child: CharacterScreenEmptyView(),
+              child: CharacterScreenEmptyView(onClearSearch: onClearSearch),
             );
           }
 

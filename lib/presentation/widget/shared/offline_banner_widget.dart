@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:rickandmorty/presentation/widget/shared/app_interaction_feedback.dart';
 
 class OfflineBannerWidget extends StatelessWidget {
   final VoidCallback onRetry;
 
-  const OfflineBannerWidget({
-    super.key,
-    required this.onRetry,
-  });
+  const OfflineBannerWidget({super.key, required this.onRetry});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      color: Colors.amber.withValues(alpha: 0.15),
+      margin: const EdgeInsets.fromLTRB(18, 0, 18, 10),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: Colors.amber.withValues(alpha: 0.13),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.26)),
+      ),
       child: Row(
         children: [
-          Icon(
-            Icons.wifi_off_rounded,
-            size: 18,
-            color: Colors.amber[800],
-          ),
+          Icon(Icons.wifi_off_rounded, size: 18, color: Colors.amber[800]),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
@@ -33,7 +32,10 @@ class OfflineBannerWidget extends StatelessWidget {
             ),
           ),
           TextButton(
-            onPressed: onRetry,
+            onPressed: () {
+              AppInteractionFeedback.tap();
+              onRetry();
+            },
             style: TextButton.styleFrom(
               foregroundColor: Colors.amber[800],
               textStyle: const TextStyle(

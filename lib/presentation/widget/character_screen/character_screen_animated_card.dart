@@ -27,6 +27,8 @@ class CharacterScreenAnimatedCard extends StatefulWidget {
 class _CharacterScreenAnimatedCardState
     extends State<CharacterScreenAnimatedCard>
     with AutomaticKeepAliveClientMixin {
+  bool _isPressed = false;
+
   @override
   bool get wantKeepAlive => true;
 
@@ -42,6 +44,9 @@ class _CharacterScreenAnimatedCardState
 
     return RepaintBoundary(
       child: GestureDetector(
+        onTapDown: (_) => setState(() => _isPressed = true),
+        onTapCancel: () => setState(() => _isPressed = false),
+        onTapUp: (_) => setState(() => _isPressed = false),
         onTap: () {
           AppInteractionFeedback.success();
           Navigator.pushNamed(
@@ -54,22 +59,27 @@ class _CharacterScreenAnimatedCardState
           AppInteractionFeedback.tap();
           showCharacterPreview(context, widget.character);
         },
-        child: TweenAnimationBuilder<double>(
-          tween: Tween(begin: 0, end: 1),
-          duration: reducedMotion
-              ? Duration.zero
-              : Duration(milliseconds: 420 + (widget.index % 8) * 70),
+        child: AnimatedScale(
+          scale: _isPressed ? 0.975 : 1,
+          duration: const Duration(milliseconds: 120),
           curve: Curves.easeOutCubic,
-          builder: (context, value, child) {
-            return Opacity(
-              opacity: value,
-              child: Transform.translate(
-                offset: Offset(0, 32 * (1 - value)),
-                child: child,
-              ),
-            );
-          },
-          child: card,
+          child: TweenAnimationBuilder<double>(
+            tween: Tween(begin: 0, end: 1),
+            duration: reducedMotion
+                ? Duration.zero
+                : Duration(milliseconds: 420 + (widget.index % 8) * 70),
+            curve: Curves.easeOutCubic,
+            builder: (context, value, child) {
+              return Opacity(
+                opacity: value,
+                child: Transform.translate(
+                  offset: Offset(0, 32 * (1 - value)),
+                  child: child,
+                ),
+              );
+            },
+            child: card,
+          ),
         ),
       ),
     );

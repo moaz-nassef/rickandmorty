@@ -32,11 +32,13 @@ class CharacterCubit extends Cubit<CharacterState> {
       final cached = await characterRepository.getCharactersPage(page);
       _isLoadingPage = false;
       _isInitialLoad = false;
-      emit(CharactersLoaded(
-        cached.characters,
-        currentPage: page,
-        totalPages: cached.totalPages,
-      ));
+      emit(
+        CharactersLoaded(
+          cached.characters,
+          currentPage: page,
+          totalPages: cached.totalPages,
+        ),
+      );
       _prefetchNext(page);
       return;
     }
@@ -48,35 +50,39 @@ class CharacterCubit extends Cubit<CharacterState> {
     if (!hasCache) {
       emit(CharacterLoading());
     } else if (previousState is CharactersLoaded) {
-      emit(CharactersLoaded(
-        previousState.characters,
-        currentPage: previousState.currentPage,
-        totalPages: previousState.totalPages,
-        isLoadingPage: true,
-      ));
+      emit(
+        CharactersLoaded(
+          previousState.characters,
+          currentPage: previousState.currentPage,
+          totalPages: previousState.totalPages,
+          isLoadingPage: true,
+        ),
+      );
     }
 
     try {
       final result = await characterRepository.getCharactersPage(page);
       _isLoadingPage = false;
       _isInitialLoad = false;
-      
+
       // Handle empty list case
       if (result.characters.isEmpty) {
         emit(CharacterSearchEmpty());
         return;
       }
-      
-      emit(CharactersLoaded(
-        result.characters,
-        currentPage: page,
-        totalPages: result.totalPages,
-      ));
+
+      emit(
+        CharactersLoaded(
+          result.characters,
+          currentPage: page,
+          totalPages: result.totalPages,
+        ),
+      );
       _prefetchNext(page);
     } on NetworkException {
       _isLoadingPage = false;
       _isInitialLoad = false;
-      
+
       if (hasCache) {
         // We have cached data, show offline with cache
         final pages = characterRepository.cachedPages.toList()..sort();
@@ -84,19 +90,25 @@ class CharacterCubit extends Cubit<CharacterState> {
           // Check if the requested page is cached
           if (characterRepository.isPageCached(page)) {
             final cached = await characterRepository.getCharactersPage(page);
-            emit(CharacterOfflineWithCache(
-              cachedCharacters: cached.characters,
-              currentPage: page,
-              totalPages: cached.totalPages,
-            ));
+            emit(
+              CharacterOfflineWithCache(
+                cachedCharacters: cached.characters,
+                currentPage: page,
+                totalPages: cached.totalPages,
+              ),
+            );
           } else {
             // Page not cached, show first available cached page
-            final fallback = await characterRepository.getCharactersPage(pages.first);
-            emit(CharacterOfflineWithCache(
-              cachedCharacters: fallback.characters,
-              currentPage: pages.first,
-              totalPages: fallback.totalPages,
-            ));
+            final fallback = await characterRepository.getCharactersPage(
+              pages.first,
+            );
+            emit(
+              CharacterOfflineWithCache(
+                cachedCharacters: fallback.characters,
+                currentPage: pages.first,
+                totalPages: fallback.totalPages,
+              ),
+            );
           }
         } else {
           emit(CharacterNetworkError());
@@ -115,23 +127,28 @@ class CharacterCubit extends Cubit<CharacterState> {
       if (!hasCache) {
         emit(CharacterFailure(e.toString()));
       } else if (previousState is CharactersLoaded) {
-        emit(CharactersLoaded(
-          previousState.characters,
-          currentPage: previousPage,
-          totalPages: characterRepository.totalPages,
-          errorMessage: e.toString(),
-        ));
+        emit(
+          CharactersLoaded(
+            previousState.characters,
+            currentPage: previousPage,
+            totalPages: characterRepository.totalPages,
+            errorMessage: e.toString(),
+          ),
+        );
       } else {
         final pages = characterRepository.cachedPages.toList()..sort();
         if (pages.isNotEmpty) {
-          final fallback =
-              await characterRepository.getCharactersPage(pages.first);
-          emit(CharactersLoaded(
-            fallback.characters,
-            currentPage: pages.first,
-            totalPages: fallback.totalPages,
-            errorMessage: e.toString(),
-          ));
+          final fallback = await characterRepository.getCharactersPage(
+            pages.first,
+          );
+          emit(
+            CharactersLoaded(
+              fallback.characters,
+              currentPage: pages.first,
+              totalPages: fallback.totalPages,
+              errorMessage: e.toString(),
+            ),
+          );
         } else {
           emit(CharacterFailure(e.toString()));
         }
@@ -173,24 +190,27 @@ class CharacterCubit extends Cubit<CharacterState> {
 
   void searchCharacters(String searchedCharacter) {
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
-      final query = searchedCharacter.trim().toLowerCase();
 
-      if (query.isEmpty) {
-        final cached = characterRepository.pageCharacters(_currentPage);
-        if (cached != null) {
-          emit(CharactersLoaded(
+    final query = searchedCharacter.trim().toLowerCase();
+    if (query.isEmpty) {
+      final cached = characterRepository.pageCharacters(_currentPage);
+      if (cached != null) {
+        emit(
+          CharactersLoaded(
             List.from(cached),
             currentPage: _currentPage,
             totalPages: characterRepository.totalPages,
-          ));
-        }
-        return;
+          ),
+        );
       }
+      return;
+    }
 
+    _debounceTimer = Timer(const Duration(milliseconds: 300), () {
       final allChars = characterRepository.cachedPages
           .expand<Character>(
-              (p) => characterRepository.pageCharacters(p) ?? <Character>[])
+            (p) => characterRepository.pageCharacters(p) ?? <Character>[],
+          )
           .toList();
       final filtered = allChars
           .where((c) => c.name.toLowerCase().contains(query))

@@ -8,8 +8,28 @@ class CharacterScreenLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: CharacterScreenLoadingScaleAnimation(
-        child: CharacterScreenLoadingSpinner(),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          CharacterScreenLoadingScaleAnimation(
+            child: CharacterScreenLoadingSpinner(),
+          ),
+          SizedBox(height: 18),
+          Text(
+            'Opening the portal...',
+            style: TextStyle(
+              color: Color(0xffE5E8EB),
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              letterSpacing: 0.4,
+            ),
+          ),
+          SizedBox(height: 6),
+          Text(
+            'Finding characters across dimensions',
+            style: TextStyle(color: Color(0xffE5E8EB), fontSize: 12),
+          ),
+        ],
       ),
     );
   }
