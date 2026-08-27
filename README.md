@@ -1,6 +1,15 @@
 ﻿<div align="center">
 
 # 🧪 Rick and Morty Explorer
+<p align="center">
+  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/cover.png" alt="rickandmorty cover" width="720"/>
+</p>
+
+<p align="center">
+  <a href="#screenshots">
+    <img src="https://img.shields.io/badge/View_All_Screenshots-02569B?style=for-the-badge&logo=image&logoColor=white" alt="View all screenshots"/>
+  </a>
+</p>
 
 **Browse the multiverse — search, filter & explore every Rick and Morty character.**
 
@@ -157,9 +166,7 @@ Made with 💜 using Flutter & the Rick and Morty API
 <!-- SCREENSHOTS-AUTO-START -->
 ## Screenshots
 
-<p align="center">
-  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/cover.png" alt="Cover" width="720"/>
-</p>
+Below are all the app screenshots. The cover image is shown above; tap the button under it to jump back here.
 
 <p align="center"><img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/WhatsApp%20Image%202026-08-27%20at%207.00.14%20PM%20(1).jpeg" alt="WhatsApp Image 2026-08-27 at 7.00.14 PM (1)" width="200"/>  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/WhatsApp%20Image%202026-08-27%20at%207.00.14%20PM%20(2).jpeg" alt="WhatsApp Image 2026-08-27 at 7.00.14 PM (2)" width="200"/>  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/WhatsApp%20Image%202026-08-27%20at%207.00.14%20PM.jpeg" alt="WhatsApp Image 2026-08-27 at 7.00.14 PM" width="200"/></p>
 <p align="center"><img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/%D8%B5%D9%88%D8%B1%D8%A9%201.jpeg" alt="صورة 1" width="200"/>  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/%D8%B5%D9%88%D8%B1%D8%A9%202.jpeg" alt="صورة 2" width="200"/>  <img src="https://raw.githubusercontent.com/moaz-nassef/rickandmorty/main/screenshots/%D8%B5%D9%88%D8%B1%D8%A93.jpeg" alt="صورة3" width="200"/></p>
